@@ -1,32 +1,38 @@
 import streamlit as st
 
-st.set_page_config(page_title="Calculadora de Rebajas", page_icon="💸")
+st.title("🛍️ Calculadora de Rebajas")
 
-st.title("💸 Calculadora de Rebajas")
-st.write("Calcula el precio final y descubre qué tan bueno es el descuento.")
+st.write("Calcula el precio final después de aplicar un descuento.")
 
-# Entradas
-precio_original = st.number_input("Precio original (€)", min_value=0.0, step=1.0)
+# Inputs
+precio_original = st.number_input("Precio original (€)", min_value=0.0, step=0.5)
 descuento = st.slider("Porcentaje de descuento (%)", 0, 100, 10)
+
+# Mostrar fórmula
+st.subheader("📐 Fórmula utilizada")
+st.latex(r"Precio\ final = Precio\ original \times (1 - \frac{Descuento}{100})")
 
 # Cálculo
 precio_final = precio_original * (1 - descuento / 100)
+ahorro = precio_original - precio_final
 
-# Evaluación del descuento con colores
-def evaluar_descuento(d):
-    if d < 10:
-        return "😐 Descuento bajo", "gray"
-    elif d < 25:
-        return "🙂 Descuento aceptable", "blue"
-    elif d < 50:
-        return "🔥 Buen descuento", "green"
-    elif d < 70:
-        return "💥 Gran oferta", "orange"
-    else:
-        return "🤑 Descuento increíble", "red"
-
-if precio_original > 0:
-
-    texto, color = evaluar_descuento(descuento)
-
+# Botón
+if st.button("Calcular rebaja"):
+    
     st.subheader("Resultado")
+
+    st.write(f"💰 Precio original: **{precio_original:.2f} €**")
+    st.write(f"🏷️ Descuento: **{descuento}%**")
+    st.write(f"💸 Ahorras: **{ahorro:.2f} €**")
+
+    st.success(f"✅ Precio final: **{precio_final:.2f} €**")
+
+    # Feedback
+    if descuento == 0:
+        st.info("No hay descuento aplicado.")
+    elif descuento < 30:
+        st.warning("Descuento pequeño, quizá haya mejores ofertas.")
+    elif descuento < 60:
+        st.info("Buen descuento 👍")
+    else:
+        st.success("¡Gran oferta! 🔥")
